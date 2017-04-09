@@ -39,6 +39,7 @@ import com.nocircleno.graffiti.utils.Conversions;
 	* @langversion 3.0
 * @playerversion Flash 10 AIR 1.5 
 	*/
+	
 @:final class LineTool extends BitmapTool
 {
     public var lineWidth(get, set) : Float;
@@ -108,16 +109,19 @@ import com.nocircleno.graffiti.utils.Conversions;
     }
     
     /**
-		* Type of Layer the tool will draw to.
-		*/
-    override private function get_layerType() : String{
+	* Type of Layer the tool will draw to.
+	*/
+    override private function get_layerType() : String
+	{
         
         var layer : String;
         
-        if (_objectDrawingMode) {
+        if (_objectDrawingMode)
+		{
             layer = LayerType.OBJECT_LAYER;
         }
-        else {
+        else
+		{
             layer = LayerType.DRAWING_LAYER;
         }
         
@@ -125,9 +129,10 @@ import com.nocircleno.graffiti.utils.Conversions;
     }
     
     /**
-		* Size of the Line
-		*/
-    private function set_lineWidth(lineW : Float) : Float{
+	* Size of the Line
+	*/
+    private function set_lineWidth(lineW : Float) : Float
+	{
         
         if (lineW > 0) {
             
