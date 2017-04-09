@@ -1,7 +1,7 @@
 # Graffiti: Openfl Bitmap Drawing Library
 **Version 3.0.3**
 
-The Graffiti AS3 Bitmap Drawing Library is designed for ActionScript developers to easily integrate drawing functionality into a Flash, Flex or Air project.
+The Graffiti Openfl Bitmap Drawing Library is designed for Haxe developers to easily integrate drawing functionality into a Flash, Windows, Mac Os, Android or iOs platforms.
 
 ## Features
 
