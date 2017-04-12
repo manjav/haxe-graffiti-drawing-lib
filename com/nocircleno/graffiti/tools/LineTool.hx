@@ -34,12 +34,9 @@ import com.nocircleno.graffiti.tools.LineType;
 import com.nocircleno.graffiti.utils.Conversions;
 
 /**
-	* LineTool Class allows the user to draw a SOLID, DASHED or DOTTED line on the canvas.
-	*
-	* @langversion 3.0
-* @playerversion Flash 10 AIR 1.5 
-	*/
-	
+* LineTool Class allows the user to draw a SOLID, DASHED or DOTTED line on the canvas.
+*/
+
 @:final class LineTool extends BitmapTool
 {
     public var lineWidth(get, set) : Float;
@@ -47,17 +44,11 @@ import com.nocircleno.graffiti.utils.Conversions;
     public var alpha(get, set) : Float;
 
     
-    private inline var MIN_SHAPE_SIZE_FOR_OBJECT : Int = 2;
+    private static var MIN_SHAPE_SIZE_FOR_OBJECT : Int = 2;
+
     
-    // store local references for performance reasons
-    private var sin : Function = Math.sin;
-    private var cos : Function = Math.cos;
-    private var sqrt : Function = Math.sqrt;
-    private var pow : Function = Math.pow;
-    private var atan2 : Function = Math.atan2;
-    
-    private inline var THETA : Float = 45;
-    private inline var LINE_SEGMENT_LENGTH_BASE : Int = 4;
+    private var THETA : Float = 45;
+    private var LINE_SEGMENT_LENGTH_BASE : Int = 4;
     
     private var _lineWidth : Float;
     private var _color : Int;
@@ -68,20 +59,21 @@ import com.nocircleno.graffiti.utils.Conversions;
     private var _d : Float;
     
     /**
-		* The <code>LineTool</code> constructor.
-		* 
-		* @param lineWidth Line width.
-		* @param lineColor Line Color.
-		* @param lineType Type of Line.
-		* @param toolMode Tool mode the Line will be drawing with.
-		* @param objectDrawingMode 
-		* 
-		* @example The following code creates a Line instance.
-		* <listing version="3.0" >
-		* // create a dotted line of size 8 and the color of red
-		* var dottedLine:Line = new Line(8, 0xFF0000, 1, LineType.DOTTED);
-		* </listing>
-		*/
+	* The <code>LineTool</code> constructor.
+	* 
+	* @param lineWidth Line width.
+	* @param lineColor Line Color.
+	* @param lineType Type of Line.
+	* @param toolMode Tool mode the Line will be drawing with.
+	* @param objectDrawingMode 
+	* 
+	* @example The following code creates a Line instance.
+	* <listing version="3.0" >
+	* // create a dotted line of size 8 and the color of red
+	* var dottedLine:Line = new Line(8, 0xFF0000, 1, LineType.DOTTED);
+	* </listing>
+	*/
+	
     public function new(lineWidth : Float = 4, lineColor : Int = 0x000000, lineAlpha : Float = 1, lineType : String = null, toolMode : String = null, objectDrawingMode : Bool = false)
     {
         super();
@@ -142,7 +134,7 @@ import com.nocircleno.graffiti.utils.Conversions;
             // update values for dotted line
             _dotSpacing = 2 * _lineWidth;
             _r = _lineWidth * .5;
-            _d = _r / cos(Conversions.radians(0.5 * THETA));
+            _d = _r / Math.cos(Conversions.radians(0.5 * THETA));
         }
         return lineW;
     }
@@ -245,7 +237,7 @@ import com.nocircleno.graffiti.utils.Conversions;
             }
         }
         
-        var lineDef : LineDefinition;
+        var lineDef : LineDefinition = null;
         
         if (lineValidWidth || lineValidHeight) {
             lineDef = new LineDefinition(_type, _color, _alpha, _lineWidth, realWidth, realHeight, commands, drawingData, new Point(_upperCornerBounds.x, _upperCornerBounds.y));
@@ -273,8 +265,8 @@ import com.nocircleno.graffiti.utils.Conversions;
         // clear it
         targetCast.graphics.clear();
         
-        var lineLength : Float = sqrt(pow(point2.x - point1.x, 2) + pow(point2.y - point1.y, 2));
-        var angle : Float = atan2(point2.y - point1.y, point2.x - point1.x);
+        var lineLength : Float = Math.sqrt(Math.pow(point2.x - point1.x, 2) + Math.pow(point2.y - point1.y, 2));
+        var angle : Float = Math.atan2(point2.y - point1.y, point2.x - point1.x);
         var i : Int;
         
         // make sure second point is defined
@@ -298,8 +290,8 @@ import com.nocircleno.graffiti.utils.Conversions;
             }
             else if (_type == LineType.DASHED) {
                 
-                var lineSegmentLength : Int = LINE_SEGMENT_LENGTH_BASE * _lineWidth;
-                var lineSegmentLengthSpace : Int = LINE_SEGMENT_LENGTH_BASE * _lineWidth;
+                var lineSegmentLength : Int = Math.round(LINE_SEGMENT_LENGTH_BASE * _lineWidth);
+                var lineSegmentLengthSpace : Int = Math.round(LINE_SEGMENT_LENGTH_BASE * _lineWidth);
                 var numberLineSegments : Int = Math.floor(lineLength / (lineSegmentLength + lineSegmentLengthSpace));
                 var segmentStartPoint : Point = new Point();
                 var segmentEndPoint : Point = new Point();
@@ -308,17 +300,17 @@ import com.nocircleno.graffiti.utils.Conversions;
                 for (i in 0...numberLineSegments + 1){
                     
                     // calculate segment start point
-                    segmentStartPoint.x = point1.x + (cos(angle) * (i * (lineSegmentLength + lineSegmentLengthSpace)));
-                    segmentStartPoint.y = point1.y + (sin(angle) * (i * (lineSegmentLength + lineSegmentLengthSpace)));
+                    segmentStartPoint.x = point1.x + (Math.cos(angle) * (i * (lineSegmentLength + lineSegmentLengthSpace)));
+                    segmentStartPoint.y = point1.y + (Math.sin(angle) * (i * (lineSegmentLength + lineSegmentLengthSpace)));
                     
                     // calculate segment end point
-                    segmentEndPoint.x = point1.x + (cos(angle) * (((i + 1) * (lineSegmentLength + lineSegmentLengthSpace)) - lineSegmentLengthSpace));
-                    segmentEndPoint.y = point1.y + (sin(angle) * (((i + 1) * (lineSegmentLength + lineSegmentLengthSpace)) - lineSegmentLengthSpace));
+                    segmentEndPoint.x = point1.x + (Math.cos(angle) * (((i + 1) * (lineSegmentLength + lineSegmentLengthSpace)) - lineSegmentLengthSpace));
+                    segmentEndPoint.y = point1.y + (Math.sin(angle) * (((i + 1) * (lineSegmentLength + lineSegmentLengthSpace)) - lineSegmentLengthSpace));
                     
                     // check last segment and adjust length if needed
                     if (i == numberLineSegments) {
                         
-                        var finalLength : Float = sqrt(pow((point2.x - segmentStartPoint.x), 2) + pow((point2.y - segmentStartPoint.y), 2));
+                        var finalLength : Float = Math.sqrt(Math.pow((point2.x - segmentStartPoint.x), 2) + Math.pow((point2.y - segmentStartPoint.y), 2));
                         
                         // if final length is less then or equal to the line segment then use end point to draw last segment
                         if (finalLength <= lineSegmentLength) {
@@ -354,25 +346,26 @@ import com.nocircleno.graffiti.utils.Conversions;
                 var dotPos : Point = new Point();
                 
                 // loop and draw all points for the line
-                for (i in 0...lineLength + 1){
+                for (i in 0... Math.floor(lineLength) + 1){
                     
                     // calculate dot position
-                    dotPos.x = point1.x + (cos(angle) * i);
-                    dotPos.y = point1.y + (sin(angle) * i);
+                    dotPos.x = point1.x + (Math.cos(angle) * i);
+                    dotPos.y = point1.y + (Math.sin(angle) * i);
                     
                     commands.push(GraphicsPathCommand.MOVE_TO);
                     drawingData.push(dotPos.x + _r);
                     drawingData.push(dotPos.y);
                     
-                    for (k in (THETA / 2)...361){
+					var tnum = Math.floor(THETA / 2);
+                    for (k in tnum ... 361){
                         
                         controlAngleRadians = Conversions.radians(k);
-                        anchorAngleRadians = Conversions.radians(k + (THETA / 2));
+                        anchorAngleRadians = Conversions.radians(k + tnum);
                         
-                        xControl = _d * cos(controlAngleRadians);
-                        yControl = _d * sin(controlAngleRadians);
-                        xAnchor = _r * cos(anchorAngleRadians);
-                        yAnchor = _r * sin(anchorAngleRadians);
+                        xControl = _d * Math.cos(controlAngleRadians);
+                        yControl = _d * Math.sin(controlAngleRadians);
+                        xAnchor = _r * Math.cos(anchorAngleRadians);
+                        yAnchor = _r * Math.sin(anchorAngleRadians);
                         
                         commands.push(GraphicsPathCommand.CURVE_TO);
                         drawingData.push(dotPos.x + xControl);

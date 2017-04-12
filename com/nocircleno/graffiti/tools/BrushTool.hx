@@ -44,11 +44,6 @@ class BrushTool extends BitmapTool
 	public var alpha(get, set) : Float;
 	public var blur(get, set) : Float;
 
-	// store local references for performance reasons
-	private var sin : Function = Math.sin;
-	private var cos : Function = Math.cos;
-	private var atan2 : Function = Math.atan2;
-	private var abs : Function = Math.abs;
 	private var _size : Float;
 	private var _halfSize : Float;
 	private var _fourthSize : Float;
@@ -232,13 +227,14 @@ class BrushTool extends BitmapTool
 	public function generateBrush(brushSize : Float = 0, brushColor : Int = -1) : Sprite
 	{
 		var brush_sp : Sprite = new Sprite();
-		var xOffset : Float; var yOffset : Float;
-		var genBrushSize : Float;
-		var genBrushHalfSize : Float;
-		var genBrushFourthSize : Float;
-		var genBrushEighthSize : Float;
-		var genBrushSixteenthSize : Float;
-		var genColor : Int;
+		var xOffset : Float = 0; 
+		var yOffset : Float = 0;
+		var genBrushSize : Float = 0;
+		var genBrushHalfSize : Float = 0;
+		var genBrushFourthSize : Float = 0;
+		var genBrushEighthSize : Float = 0;
+		var genBrushSixteenthSize : Float = 0;
+		var genColor : Int = 0;
 
 		// check brush size
 		if (brushSize == 0)
@@ -283,7 +279,6 @@ class BrushTool extends BitmapTool
 			brush_sp.graphics.drawCircle(0, 0, genBrushHalfSize);
 			brush_sp.graphics.endFill();
 		}
-
 		//////////////////////////////////////////////////////////
 		// Rectangle Shape Brushes
 		//////////////////////////////////////////////////////////
@@ -305,10 +300,9 @@ class BrushTool extends BitmapTool
 				yOffset = genBrushHalfSize;
 			}
 			brush_sp.graphics.beginFill(genColor, 1);
-			brush_sp.graphics.drawRect(-xOffset, -yOffset, xOffset << 1, yOffset << 1);
+			brush_sp.graphics.drawRect(-xOffset, -yOffset, cast(xOffset, Int) << 1, cast(yOffset, Int) << 1);
 			brush_sp.graphics.endFill();
 		}
-
 		//////////////////////////////////////////////////////////
 		// Foward Line Shape Brush
 		//////////////////////////////////////////////////////////
@@ -353,24 +347,24 @@ class BrushTool extends BitmapTool
 	}
 
 	/**
-		* The <code>apply</code> method applies the brush to the DisplayObject passed
-		* to the method.  We use two point due to the delay in Mouse Events to create
-		* continuous  brush strokes.
-		*
-		* @param drawingTarget Sprite that the brush will draw to.
-		* @param point1 Starting point to apply brush.
-		* @param point2 End point to apply brush.
-		*/
+	* The <code>apply</code> method applies the brush to the DisplayObject passed
+	* to the method.  We use two point due to the delay in Mouse Events to create
+	* continuous  brush strokes.
+	*
+	* @param drawingTarget Sprite that the brush will draw to.
+	* @param point1 Starting point to apply brush.
+	* @param point2 End point to apply brush.
+	*/
 	override public function apply(drawingTarget : DisplayObject, point1 : Point, point2 : Point = null) : Void
 	{
 		// cast target as a Sprite
 		var targetCast : Sprite = cast((drawingTarget), Sprite);
 
-		var xOffset : Float;
-		var yOffset : Float;
-		var vPoint1 : Point;
-		var vPoint2 : Point;
-		var angleBetweenPoints : Float;
+		var xOffset : Float = 0;
+		var yOffset : Float = 0;
+		var vPoint1 : Point = null;
+		var vPoint2 : Point = null;
+		var angleBetweenPoints : Float = 0;
 
 		// apply blur filter if blur is greater than zero
 		if (_blur > 0 && targetCast.filters.length < 1)
@@ -419,16 +413,16 @@ class BrushTool extends BitmapTool
 				drawingData.push(point1.y - yOffset);
 
 				commands.push(GraphicsPathCommand.LINE_TO);
-				drawingData.push(point1.x - xOffset + (xOffset << 1));
+				drawingData.push(point1.x - xOffset + (Math.round(xOffset) << 1));
 				drawingData.push(point1.y - yOffset);
 
 				commands.push(GraphicsPathCommand.LINE_TO);
-				drawingData.push(point1.x - xOffset + (xOffset << 1));
-				drawingData.push(point1.y - yOffset + (yOffset << 1));
+				drawingData.push(point1.x - xOffset + (Math.round(xOffset) << 1));
+				drawingData.push(point1.y - yOffset + (Math.round(yOffset) << 1));
 
 				commands.push(GraphicsPathCommand.LINE_TO);
 				drawingData.push(point1.x - xOffset);
-				drawingData.push(point1.y - yOffset + (yOffset << 1));
+				drawingData.push(point1.y - yOffset + (Math.round(yOffset) << 1));
 
 				commands.push(GraphicsPathCommand.LINE_TO);
 				drawingData.push(point1.x - xOffset);
@@ -623,7 +617,7 @@ class BrushTool extends BitmapTool
 			//////////////////////////////////////////////////////////
 			else if (_type == BrushType.FORWARD_LINE)
 			{
-				angleBetweenPoints = Conversions.degrees(atan2(vPoint2.x - vPoint1.x, vPoint2.y - vPoint1.y));
+				angleBetweenPoints = Conversions.degrees(Math.atan2(vPoint2.x - vPoint1.x, vPoint2.y - vPoint1.y));
 
 				commands.push(GraphicsPathCommand.MOVE_TO);
 				drawingData.push(vPoint1.x - _halfSize);
@@ -708,7 +702,7 @@ class BrushTool extends BitmapTool
 			//////////////////////////////////////////////////////////
 			else if (_type == BrushType.BACKWARD_LINE)
 			{
-				angleBetweenPoints = Conversions.degrees(atan2(vPoint2.x - vPoint1.x, vPoint2.y - vPoint1.y));
+				angleBetweenPoints = Conversions.degrees(Math.atan2(vPoint2.x - vPoint1.x, vPoint2.y - vPoint1.y));
 
 				commands.push(GraphicsPathCommand.MOVE_TO);
 				drawingData.push(vPoint1.x - _halfSize);
@@ -788,7 +782,7 @@ class BrushTool extends BitmapTool
 			else if (_type == BrushType.DIAMOND)
 			{
 
-				if (abs(point2.x - point1.x) > abs(point2.y - point1.y))
+				if (Math.abs(point2.x - point1.x) > Math.abs(point2.y - point1.y))
 				{
 
 					commands.push(GraphicsPathCommand.MOVE_TO);

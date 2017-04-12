@@ -17,21 +17,22 @@
 
 package com.nocircleno.graffiti.tools;
 
+import openfl.Vector;
 import openfl.geom.Point;
 
 /**
 * BrushDefinition Class is used to store all information regarding a single brush mark.
 */
 
-class BrushDefinition extends Dynamic
+class BrushDefinition
 {
 	public var type(get, set) : String;
 	public var color(get, set) : Int;
 	public var alpha(get, set) : Float;
 	public var size(get, set) : Float;
 	public var blur(get, set) : Float;
-	public var commands(get, set) : Array<Int>;
-	public var drawingData(get, set) : Array<Float>;
+	public var commands(get, set) : Vector<Int>;
+	public var drawingData(get, set) : Vector<Float>;
 	public var position(get, set) : Point;
 
 	private var _type : String;
@@ -40,8 +41,8 @@ class BrushDefinition extends Dynamic
 	private var _size : Float;
 	private var _blur : Float;
 	private var _position : Point;
-	private var _commnads : Array<Int>;
-	private var _drawingData : Array<Float>;
+	private var _commnads : Vector<Int>;
+	private var _drawingData : Vector<Float>;
 
 	/**
 	* The <code>BrushDefinition</code> constructor.
@@ -51,12 +52,9 @@ class BrushDefinition extends Dynamic
 	* @param position Position of the brush mark.
 	* @param commands Commands used to draw the brush mark.
 	* @param drawingData Drawing data.
-	*
 	*/
-	public function new(type : String, color : Int, alpha : Float, size : Float, blur : Float, commands : Array<Int>, drawingData : Array<Float>, position : Point)
+	public function new(type : String, color : Int, alpha : Float, size : Float, blur : Float, commands : Vector<Int>, drawingData : Vector<Float>, position : Point)
 	{
-		super();
-
 		// store properties
 		_type = type;
 		_color = color;
@@ -64,8 +62,8 @@ class BrushDefinition extends Dynamic
 		_size = size;
 		_blur = blur;
 		_position = position.clone();
-		_commnads = commands.concat(new Array<Int>());
-		_drawingData = drawingData.concat(new Array<Float>());
+		_commnads = commands.concat(new Vector<Int>());
+		_drawingData = drawingData.concat(new Vector<Float>());
 	}
 
 	/**
@@ -141,13 +139,13 @@ class BrushDefinition extends Dynamic
 	/**
 	* Commands value of the brush mark.
 	*/
-	private function set_commands(value : Array<Int>) : Array<Int>
+	private function set_commands(value : Vector<Int>) : Vector<Int>
 	{
-		_commnads = value.concat(new Array<Int>());
+		_commnads = value.concat(new Vector<Int>());
 		return value;
 	}
 
-	private function get_commands() : Array<Int>
+	private function get_commands() : Vector<Int>
 	{
 		return _commnads;
 	}
@@ -155,13 +153,13 @@ class BrushDefinition extends Dynamic
 	/**
 	* Drawing Data of the brush mark.
 	*/
-	private function set_drawingData(value : Array<Float>) : Array<Float>
+	private function set_drawingData(value : Vector<Float>) : Vector<Float>
 	{
-		_drawingData = value.concat(new Array<Float>());
+		_drawingData = value.concat(new Vector<Float>());
 		return value;
 	}
 
-	private function get_drawingData() : Array<Float>
+	private function get_drawingData() : Vector<Float>
 	{
 		return _drawingData;
 	}

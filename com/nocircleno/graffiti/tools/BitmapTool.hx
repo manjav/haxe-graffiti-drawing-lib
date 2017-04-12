@@ -17,6 +17,7 @@
 
 package com.nocircleno.graffiti.tools;
 
+import openfl.Vector;
 import openfl.display.DisplayObject;
 import openfl.geom.Point;
 import com.nocircleno.graffiti.tools.ITool;
@@ -35,10 +36,11 @@ class BitmapTool implements ITool
 
 	private var _renderType : String;
 	private var _mode : String;
-	private var _type : String; private var commands : Array<Int> = new Array<Int>();
-	private var drawingData : Array<Float> = new Array<Float>();
-	private var _upperCornerBounds : Point = new Point(Float.MAX_VALUE, Float.MAX_VALUE);
-	private var _lowerRightCornerBounds : Point = new Point(Float.MIN_VALUE, Float.MIN_VALUE);
+	private var _type : String;
+	private var commands : Vector<Int> = new Vector<Int>();
+	private var drawingData : Vector<Float> = new Vector<Float>();
+	private var _upperCornerBounds : Point = new Point(9999999, 9999999);
+	private var _lowerRightCornerBounds : Point = new Point(-9999999, -9999999);
 	private var _objectDrawingMode : Bool = false;
 
 	public function new()
@@ -125,12 +127,12 @@ class BitmapTool implements ITool
 	*/
 	public function resetTool() : Void
 	{
-		_upperCornerBounds.x = Float.MAX_VALUE;
-		_upperCornerBounds.y = Float.MAX_VALUE;
-		_lowerRightCornerBounds.x = Float.MIN_VALUE;
-		_lowerRightCornerBounds.y = Float.MIN_VALUE;
-		commands = new Array<Int>();
-		drawingData = new Array<Float>();
+		_upperCornerBounds.x = 9999999;
+		_upperCornerBounds.y = 9999999;
+		_lowerRightCornerBounds.x = -9999999;
+		_lowerRightCornerBounds.y = -9999999;
+		commands = new Vector<Int>();
+		drawingData = new Vector<Float>();
 	}
 
 	/**
