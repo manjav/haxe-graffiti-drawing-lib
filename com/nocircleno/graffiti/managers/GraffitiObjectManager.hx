@@ -118,17 +118,17 @@ class GraffitiObjectManager extends EventDispatcher
 	{
 		var multipleObjectTypesSelected : Bool = false;
 		var numSelectedObjects : Int = _selectedObjects.length;
-		var lastClassType : String;
+		var lastClassType : String = null;
 
-		for (i in 0...numSelectedObjects)
+		for (i in 0 ... numSelectedObjects)
 		{
 			if (i == 0)
 			{
-				lastClassType = Type.getClassName(_selectedObjects[i]);
+				lastClassType = Type.getClassName(Type.getClass(_selectedObjects[i]));
 			}
 			else
 			{
-				if (lastClassType != Type.getClassName(_selectedObjects[i]))
+				if (lastClassType != Type.getClassName(Type.getClass(_selectedObjects[i])))
 				{
 					multipleObjectTypesSelected = true;
 					break;
@@ -154,15 +154,15 @@ class GraffitiObjectManager extends EventDispatcher
 		var lastAlpha : Float = -1;
 		var size : Float = -1;
 		var lastSize : Float = -1;
-		var font : Font;
-		var lastFont : Font;
+		var font : Font = null;
+		var lastFont : Font = null;
 		for (i in 0...numSelectedObjects)
 		{
 			if (param == EditableParams.FILL_TEXT_COLOR)
 			{
 				if (Std.is(_selectedObjects[i], TextObject))
 				{
-					color = as3hx.Compat.parseInt(cast((_selectedObjects[i]), TextObject).textSetting.textFormat.color);
+					color = cast(_selectedObjects[i], TextObject).textSetting.textFormat.color;
 				}
 				else if (Std.is(_selectedObjects[i], BrushObject))
 				{
@@ -209,7 +209,8 @@ class GraffitiObjectManager extends EventDispatcher
 			{
 				if (Std.is(_selectedObjects[i], TextObject))
 				{
-					size = as3hx.Compat.parseInt(cast((_selectedObjects[i]), TextObject).textSetting.textFormat.size);
+					size = cast(_selectedObjects[i], TextObject).textSetting.textFormat.size;
+					
 					if (lastSize > -1 && size != lastSize)
 					{
 						multipleValuesInSelection = true;
@@ -391,8 +392,8 @@ class GraffitiObjectManager extends EventDispatcher
 						}
 						else if (setting == EditableParams.TEXT_SIZE)
 						{
-							ts = cast((_selectedObjects[i]), TextObject).textSetting;
-							ts.textFormat.size = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+							ts = cast(_selectedObjects[i], TextObject).textSetting;
+							ts.textFormat.size = cast(Reflect.field(settings, setting), Int);
 
 							cast((_selectedObjects[i]), TextObject).textSetting = ts;
 						}
@@ -403,21 +404,21 @@ class GraffitiObjectManager extends EventDispatcher
 					if (Std.is(_selectedObjects[i], BrushObject))
 					{
 						bd = cast((_selectedObjects[i]), BrushObject).brushDefinition;
-						bd.color = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						bd.color = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), BrushObject).brushDefinition = bd;
 					}
 					else if (Std.is(_selectedObjects[i], ShapeObject))
 					{
 						sd = cast((_selectedObjects[i]), ShapeObject).shapeDefinition;
-						sd.fillColor = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						sd.fillColor = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), ShapeObject).shapeDefinition = sd;
 					}
 					else if (Std.is(_selectedObjects[i], TextObject))
 					{
 						ts = cast((_selectedObjects[i]), TextObject).textSetting;
-						ts.textFormat.color = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						ts.textFormat.color = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), TextObject).textSetting = ts;
 					}
@@ -427,14 +428,14 @@ class GraffitiObjectManager extends EventDispatcher
 					if (Std.is(_selectedObjects[i], BrushObject))
 					{
 						bd = cast((_selectedObjects[i]), BrushObject).brushDefinition;
-						bd.alpha = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						bd.alpha = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), BrushObject).brushDefinition = bd;
 					}
 					else if (Std.is(_selectedObjects[i], ShapeObject))
 					{
 						sd = cast((_selectedObjects[i]), ShapeObject).shapeDefinition;
-						sd.fillAlpha = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						sd.fillAlpha = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), ShapeObject).shapeDefinition = sd;
 					}
@@ -444,14 +445,14 @@ class GraffitiObjectManager extends EventDispatcher
 					if (Std.is(_selectedObjects[i], ShapeObject))
 					{
 						sd = cast((_selectedObjects[i]), ShapeObject).shapeDefinition;
-						sd.strokeColor = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						sd.strokeColor = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), ShapeObject).shapeDefinition = sd;
 					}
 					else if (Std.is(_selectedObjects[i], LineObject))
 					{
 						ld = cast((_selectedObjects[i]), LineObject).lineDefinition;
-						ld.strokeColor = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						ld.strokeColor = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), LineObject).lineDefinition = ld;
 					}
@@ -461,14 +462,14 @@ class GraffitiObjectManager extends EventDispatcher
 					if (Std.is(_selectedObjects[i], ShapeObject))
 					{
 						sd = cast((_selectedObjects[i]), ShapeObject).shapeDefinition;
-						sd.strokeAlpha = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						sd.strokeAlpha = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), ShapeObject).shapeDefinition = sd;
 					}
 					else if (Std.is(_selectedObjects[i], LineObject))
 					{
 						ld = cast((_selectedObjects[i]), LineObject).lineDefinition;
-						ld.strokeAlpha = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						ld.strokeAlpha = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), LineObject).lineDefinition = ld;
 					}
@@ -478,14 +479,14 @@ class GraffitiObjectManager extends EventDispatcher
 					if (Std.is(_selectedObjects[i], ShapeObject))
 					{
 						sd = cast((_selectedObjects[i]), ShapeObject).shapeDefinition;
-						sd.strokeSize = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						sd.strokeSize = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), ShapeObject).shapeDefinition = sd;
 					}
 					else if (Std.is(_selectedObjects[i], LineObject))
 					{
 						ld = cast((_selectedObjects[i]), LineObject).lineDefinition;
-						ld.strokeSize = as3hx.Compat.parseInt(Reflect.field(settings, setting));
+						ld.strokeSize = cast(Reflect.field(settings, setting), Int);
 
 						cast((_selectedObjects[i]), LineObject).lineDefinition = ld;
 					}
@@ -565,13 +566,15 @@ class GraffitiObjectManager extends EventDispatcher
 		// select each object in the vector
 		if (_selectedObjects.length > 0)
 		{
-			_selectedObjects.forEach(selectObject, null);
+			selectObjects();
+			//\\_selectedObjects.forEach(selectObject, null);
 		}
 
 		// sync selection list with the main list
 		if (_objects.length > 0)
 		{
-			_objects.forEach(syncListWithSelection, null);
+			syncListWithSelections();
+			//\\_objects.forEach(syncListWithSelection, null);
 		}
 
 		if (_selectedObjects.length > 0)
@@ -688,7 +691,8 @@ class GraffitiObjectManager extends EventDispatcher
 		// deselect all object in vector
 		if (_selectedObjects.length > 0)
 		{
-			_selectedObjects.forEach(deselectObject);
+			deselectObjects();
+			//\\_selectedObjects.forEach(deselectObject);
 			dispatchEvent(new GraffitiObjectEvent(_selectedObjects.concat(new Array<GraffitiObject>()), GraffitiObjectEvent.DESELECT));
 		}
 
@@ -774,7 +778,6 @@ class GraffitiObjectManager extends EventDispatcher
 		Params	: item - GraffitiObject
 				  list - The list of graffiti objects.
 	***************************************************************************/
-
 	private function removeItemFromList(item : GraffitiObject, list : Array<GraffitiObject>) : Void
 	{
 		var itemIndex : Int = Lambda.indexOf(list, item);
@@ -795,7 +798,11 @@ class GraffitiObjectManager extends EventDispatcher
 				  index - index of graffiti object in vector.
 				  vector - The vector that stores the graffiti objects.
 	***************************************************************************/
-
+	private function syncListWithSelections() : Void
+	{
+		for (i in 0 ... _objects.length)
+			syncListWithSelection(_objects[i], i, _objects);
+	}
 	private function syncListWithSelection(item : GraffitiObject, index : Int, vector : Array<GraffitiObject>) : Void
 	{
 		// if item is not in selected object list
@@ -824,7 +831,9 @@ class GraffitiObjectManager extends EventDispatcher
 		e.currentTarget.removeEventListener(Event.REMOVED_FROM_STAGE, cleanUp);
 		removeObject(cast((e.currentTarget), GraffitiObject));
 	}
-
+	
+	
+	
 	/**************************************************************************
 	Method	: selectObject()
 
@@ -835,6 +844,11 @@ class GraffitiObjectManager extends EventDispatcher
 			  index - index of graffiti object in vector.
 			  vector - The vector that stores the graffiti objects.
 	***************************************************************************/
+	private function selectObjects() 
+	{
+		for (i in 0 ... _selectedObjects.length)
+			selectObject(_selectedObjects[i], i, _selectedObjects);
+	}
 	private function selectObject(item : GraffitiObject, index : Int, vector : Array<GraffitiObject>) : Void
 	{
 		if (!item.selected)
@@ -843,6 +857,8 @@ class GraffitiObjectManager extends EventDispatcher
 		}
 	}
 
+	
+		
 	/**************************************************************************
 		Method	: deselectObject()
 
@@ -853,6 +869,11 @@ class GraffitiObjectManager extends EventDispatcher
 				  index - index of graffiti object in vector.
 				  vector - The vector that stores the graffiti objects.
 	***************************************************************************/
+	private function deselectObjects() 
+	{
+		for (i in 0 ... _selectedObjects.length)
+			deselectObject(_selectedObjects[i], i, _selectedObjects);
+	}
 	private function deselectObject(item : GraffitiObject, index : Int, vector : Array<GraffitiObject>) : Void
 	{
 		if (item.selected)

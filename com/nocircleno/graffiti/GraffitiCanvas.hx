@@ -27,12 +27,22 @@ import com.nocircleno.graffiti.tools.LineDefinition;
 import com.nocircleno.graffiti.display.LineObject;
 import openfl.display.BitmapData;
 import openfl.display.Bitmap;
+import openfl.display.CapsStyle;
 import openfl.display.DisplayObject;
+import openfl.display.IBitmapDrawable;
+import openfl.display.JointStyle;
+import openfl.display.LineScaleMode;
 import openfl.display.Sprite;
+import openfl.events.KeyboardEvent;
 import openfl.events.MouseEvent;
 import openfl.events.Event;
+import openfl.filters.BlurFilter;
+import openfl.geom.ColorTransform;
+import openfl.geom.Matrix;
 import openfl.geom.Point;
 import openfl.geom.Rectangle;
+import openfl.text.TextField;
+import openfl.ui.Keyboard;
 
 import com.nocircleno.graffiti.events.GraffitiObjectEvent;
 import com.nocircleno.graffiti.events.CanvasEvent;
@@ -105,8 +115,8 @@ class GraffitiCanvas extends Sprite
     
     public static inline var HISTORY_LENGTH_CHANGE : String = "historyLengthChange";
     
-    private inline var OBJECT_NUDGE_AMOUNT : Int = 1;
-    private inline var OBJECT_SHIFT_NUDGE_AMOUNT : Int = 5;
+    private static var OBJECT_NUDGE_AMOUNT : Int = 1;
+    private static var OBJECT_SHIFT_NUDGE_AMOUNT : Int = 5;
     
     // display assets
     private var drawing_layer : Sprite;
@@ -278,7 +288,6 @@ class GraffitiCanvas extends Sprite
 				object_layer.addChild(graffitiObjects[i]);
 				_objectManager.addObject(graffitiObjects[i]);
 			}
-			
 		}
         _objectManager.deselectAll();
     }
@@ -714,7 +723,7 @@ class GraffitiCanvas extends Sprite
             snapshot2 = cast((snapshot1.clone()), BitmapData);
             
             // fill on point
-            snapshot1.floodFill(point.x, point.y, color);
+            snapshot1.floodFill(cast(point.x, Int), cast(point.y, Int), color);
             
             // compare snapshots
             var compareResult : Dynamic = snapshot1.compare(snapshot2);
@@ -733,10 +742,10 @@ class GraffitiCanvas extends Sprite
                 if (useAdvancedFill) {
                     
                     // apply glow to smoothout and expand the fill a little
-                    comp.applyFilter(comp, comp.rect, new Point(0, 0), new GradientGlowFilter(0, 90, [color, color], [0, alphaNormalized], [0, 255], 2, 2, smoothStrength, BitmapFilterQuality.HIGH, BitmapFilterType.FULL, true));
+                    //\\comp.applyFilter(comp, comp.rect, new Point(0, 0), new GradientGlowFilter(0, 90, [color, color], [0, alphaNormalized], [0, 255], 2, 2, smoothStrength, BitmapFilterQuality.HIGH, BitmapFilterType.FULL, true));
                     
                     // we do not want to apply any alpha settings to this copy that will be used as an alpha mask with copy pixels
-                    compAlpha.applyFilter(comp, comp.rect, new Point(0, 0), new GradientGlowFilter(0, 90, [color, color], [0, 0], [0, 255], 2, 2, smoothStrength, BitmapFilterQuality.HIGH, BitmapFilterType.FULL));
+                    //\\compAlpha.applyFilter(comp, comp.rect, new Point(0, 0), new GradientGlowFilter(0, 90, [color, color], [0, 0], [0, 255], 2, 2, smoothStrength, BitmapFilterQuality.HIGH, BitmapFilterType.FULL));
                 }
                 else {
                     
@@ -789,7 +798,7 @@ class GraffitiCanvas extends Sprite
                 var snapshot : BitmapData = cast((this.drawing()), BitmapData);
                 
                 // get color
-                rColor = snapshot.getPixel32(point.x, point.y);
+                rColor = snapshot.getPixel32(cast(point.x, Int), cast(point.y, Int));
                 
                 // kill bitmapdata
                 snapshot.dispose();
@@ -797,7 +806,7 @@ class GraffitiCanvas extends Sprite
             else {
                 
                 // get color
-                rColor = _bmp.getPixel32(point.x, point.y);
+                rColor = _bmp.getPixel32(cast(point.x, Int), cast(point.y, Int));
             }
         }
         else {
@@ -931,7 +940,7 @@ class GraffitiCanvas extends Sprite
         
         if (Std.is(asset, IBitmapDrawable)) {
             
-            _bmp.draw(cast((asset), IBitmapDrawable));
+            _bmp.draw(cast(asset, IBitmapDrawable));
             
             // record to history if one is being recorded
             if (_maxHistoryLength != 0) {
@@ -995,7 +1004,7 @@ class GraffitiCanvas extends Sprite
                         
                         // clear timeout if it hasn't fired yet
                         if (_nudgeTimoutID != -1) {
-                            as3hx.Compat.clearTimeout(_nudgeTimoutID);
+                            //\\as3hx.Compat.clearTimeout(_nudgeTimoutID);
                         }
                         
                         _nudgingObjects = false;
@@ -1035,7 +1044,7 @@ class GraffitiCanvas extends Sprite
                     nudgeObjects(null);
                     
                     // set a short timeout before continually moving objects
-                    _nudgeTimoutID = as3hx.Compat.setTimeout(enableContinuousNudging, 500);
+                    //\\_nudgeTimoutID = as3hx.Compat.setTimeout(enableContinuousNudging, 500);
                 }
 				
             }
@@ -1331,9 +1340,12 @@ class GraffitiCanvas extends Sprite
 			
 			Params	: e -- MouseEvent object.
 		***************************************************************************/
-    private function mouseHandler(e : MouseEvent) : Void{
-        
-        if (_canvasEnabled && (_tool != null || _mouseDrag)) {
+    private function mouseHandler(e : MouseEvent) : Void
+	{
+        var selectedObjects : Array<GraffitiObject> = new Array<GraffitiObject>();
+
+        if (_canvasEnabled && (_tool != null || _mouseDrag)) 
+		{
             
             if (e.type == MouseEvent.MOUSE_DOWN) {
                 
@@ -1362,17 +1374,19 @@ class GraffitiCanvas extends Sprite
                     
                     
                     
-                    if (_tool.renderType == ToolRenderType.SINGLE_CLICK || Std.is(_tool, SelectionTool)) {
+                    if (_tool.renderType == ToolRenderType.SINGLE_CLICK || Std.is(_tool, SelectionTool))
+					{
                         
-                        if (Std.is(_tool, FillBucketTool)) {
+                        if (Std.is(_tool, FillBucketTool))
+						{
                             
                             fill(new Point(container.mouseX, container.mouseY), cast((_tool), FillBucketTool).fillColor, cast((_tool), FillBucketTool).useEntireCanvas, cast((_tool), FillBucketTool).useAdvancedFill, cast((_tool), FillBucketTool).smoothStrength);
                         }
-                        else {
+                        else 
+						{
                             
                             // Get any objects under the mouse position.
                             var objs : Array<GraffitiObject> = getGraffitiObjectsAtPoint(new Point(object_layer.mouseX, object_layer.mouseY));
-                            var selectedObjects : Array<GraffitiObject>;
                             var text : TextObject;
                             
                             // if no objects where click on...
@@ -1405,7 +1419,7 @@ class GraffitiCanvas extends Sprite
                                 // determine what was clicked on
                                 else if (Std.is(_tool, SelectionTool)) {
                                     
-                                    cast((_tool), SelectionTool).startSelectionPoint = new Point(container.mouseX, container.mouseY);
+                                    cast(_tool, SelectionTool).startSelectionPoint = new Point(container.mouseX, container.mouseY);
                                     stage.addEventListener(MouseEvent.MOUSE_MOVE, draw, false, 0, true);
                                     stage.addEventListener(MouseEvent.MOUSE_UP, mouseHandler, false, 0, true);
                                 }
@@ -1416,10 +1430,10 @@ class GraffitiCanvas extends Sprite
                                     
                                     // get Text Reference
                                     if (Std.is(e.target, TextField)) {
-                                        text = cast((e.target.parent), TextObject);
+                                        text = cast(cast(e.target, DisplayObject).parent, TextObject);
                                     }
                                     else {
-                                        text = cast((e.target), TextObject);
+                                        text = cast(e.target, TextObject);
                                     }
                                     
                                     if (!text.editing) {
@@ -1586,7 +1600,8 @@ class GraffitiCanvas extends Sprite
                             }
                         }
                         
-                        if (selectedObjects != null) {
+                        if (selectedObjects != null) 
+						{
                             _objectManager.setSelection(selectedObjects);
                         }
 
@@ -1666,20 +1681,22 @@ class GraffitiCanvas extends Sprite
 			
 			Params	: e -- MouseEvent object that can be null.
 		***************************************************************************/
-    private function draw(e : MouseEvent = null) : Void{
+    private function draw(e : MouseEvent = null) : Void
+	{
         
         if (Std.is(_tool, SelectionTool)) {
             
-            cast((_tool), SelectionTool).endSelectionPoint = new Point(container.mouseX, container.mouseY);
-            var selectionRectangle : Rectangle = cast((_tool), SelectionTool).selectionRectangle;
+            cast(_tool, SelectionTool).endSelectionPoint = new Point(container.mouseX, container.mouseY);
+            var selectionRectangle : Rectangle = cast(_tool, SelectionTool).selectionRectangle;
             
             drawing_layer.graphics.clear();
             drawing_layer.graphics.lineStyle(1, 0xFF0000, 1, true, LineScaleMode.NORMAL, CapsStyle.SQUARE, JointStyle.MITER);
             drawing_layer.graphics.drawRect(selectionRectangle.x, selectionRectangle.y, selectionRectangle.width, selectionRectangle.height);
         }
-        else {
+        else
+		{
             
-            var toolRef : BitmapTool = cast((_tool), BitmapTool);
+            var toolRef : BitmapTool = cast(_tool, BitmapTool);
             var nextPoint : Point = new Point(container.mouseX, container.mouseY);
             
             if (toolRef.renderType == ToolRenderType.CLICK_DRAG) {
@@ -1797,9 +1814,8 @@ class GraffitiCanvas extends Sprite
         }
 
 		// force screen update if event object is defined  
-        if (e != null) {
+        if (e != null) 
             e.updateAfterEvent();
-        }
     }
     
     private function eraseObjectsAtPoint(point : Point) : Void{

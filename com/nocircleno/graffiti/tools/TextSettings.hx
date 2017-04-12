@@ -25,12 +25,9 @@ import openfl.text.TextFormat;
 
 
 /**
-	* TextSettings Class is used to configure the look of text for the graffiti library.
-	*
-	* @langversion 3.0
-* @playerversion Flash 10 AIR 1.5 
-	*/
-class TextSettings extends Dynamic
+* TextSettings Class is used to configure the look of text for the graffiti library.
+*/
+class TextSettings 
 {
     public var embeddedFont(get, never) : Bool;
     public var font(get, set) : Font;
@@ -68,8 +65,6 @@ class TextSettings extends Dynamic
 		*/
     public function new(font : Font, textFormat : TextFormat, backgroundColor : Int = -1, borderColor : Int = -1)
     {
-        super();
-        
         // store properties
         this.font = font;
         this.textFormat = new TextFormat(textFormat.font, textFormat.size, textFormat.color);
