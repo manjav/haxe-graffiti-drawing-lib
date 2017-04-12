@@ -53,7 +53,6 @@ import com.nocircleno.graffiti.tools.LayerType;
 import com.nocircleno.graffiti.display.GraffitiObject;
 import com.nocircleno.graffiti.display.TextObject;
 import com.nocircleno.graffiti.managers.GraffitiObjectManager;
-import com.nocircleno.graffiti.converters.DegrafaConverter;
 import com.nocircleno.graffiti.converters.FormatType;
 
 
@@ -270,10 +269,12 @@ class GraffitiCanvas extends Sprite
         
         var graffitiObjects : Array<GraffitiObject>;
         
-        if (format == FormatType.DEGRAFA) {
-            graffitiObjects = DegrafaConverter.from(xml);
+        if (format == FormatType.DEGRAFA) 
+		{
+            graffitiObjects = new Array<GraffitiObject>();//\\DegrafaConverter.from(xml);
 			
-			for (i in  0 ... graffitiObjects.length){
+			for (i in  0 ... graffitiObjects.length)
+			{
 				object_layer.addChild(graffitiObjects[i]);
 				_objectManager.addObject(graffitiObjects[i]);
 			}
@@ -289,7 +290,7 @@ class GraffitiCanvas extends Sprite
 		*
 		* @return XML in the format specified
 		*/
-    public function getObjectData(format : String) : FastXML{
+    public function getObjectData(format : String) : Xml{
         
         return getDataForObjects(_objectManager.objectList, format);
     }
@@ -301,7 +302,7 @@ class GraffitiCanvas extends Sprite
 		*
 		* @return XML in the format specified
 		*/
-    public function getSelectedObjectData(format : String) : FastXML{
+    public function getSelectedObjectData(format : String) : Xml{
         
         var selectedObjectList : Array<GraffitiObject> = new Array<GraffitiObject>();
         
@@ -315,12 +316,13 @@ class GraffitiCanvas extends Sprite
         return getDataForObjects(selectedObjectList, format);
     }
     
-    private function getDataForObjects(objectList : Array<GraffitiObject>, format : String) : FastXML{
+    private function getDataForObjects(objectList : Array<GraffitiObject>, format : String) : Xml{
         
-        var xml : FastXML;
+        var xml : Xml = Xml.parse('<root/>');
         
-        if (format == FormatType.DEGRAFA) {
-            xml = DegrafaConverter.to(objectList);
+        if (format == FormatType.DEGRAFA)
+		{
+			//\\xml = DegrafaConverter.to(objectList);
         }
         
         return xml;
@@ -1220,7 +1222,7 @@ class GraffitiCanvas extends Sprite
         
         var historyPoint : CanvasHistoryPoint = _history[_historyPosition];
         var historyBitmapData : BitmapData = historyPoint.bitmapData;
-        var historyObjectData : FastXML = historyPoint.objectData;
+        var historyObjectData : Xml = historyPoint.objectData;
         
         // get history bitmap rectangle
         var historyRect : Rectangle = historyBitmapData.rect;
@@ -1813,13 +1815,13 @@ class GraffitiCanvas extends Sprite
 class CanvasHistoryPoint
 {
     public var bitmapData(get, never) : BitmapData;
-    public var objectData(get, never) : FastXML;
+    public var objectData(get, never) : Xml;
 
     
     private var _bitmapData : BitmapData;
-    private var _objectData : FastXML;
+    private var _objectData : Xml;
     
-    public function new(bitmapData : BitmapData, objectData : FastXML)
+    public function new(bitmapData : BitmapData, objectData : Xml)
     {
         
         this._bitmapData = bitmapData;
@@ -1830,13 +1832,13 @@ class CanvasHistoryPoint
         return _bitmapData;
     }
     
-    private function get_objectData() : FastXML{
+    private function get_objectData() : Xml{
         return _objectData;
     }
     
     public function dispose() : Void{
         
         _bitmapData.dispose();
-        System.disposeXML(_objectData);
+        //System.disposeXML(_objectData);
     }
 }
